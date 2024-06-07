@@ -16,7 +16,6 @@ def take_user_input():
 def extended_gcd(phi_n):
     """Function takes in phi_n and returns algorithm values r, x, y needed for
     deciphering message c"""
-    # initialize variables and lists
     e = 67
     x2 = 1
     x1 = 0
@@ -42,7 +41,6 @@ def extended_gcd(phi_n):
         x2, x1 = x1, x
         y2, y1 = y1, y
 
-        # append lists
         s_values.append(s)
         r_values.append(r)
         x_values.append(x)
@@ -54,13 +52,12 @@ def extended_gcd(phi_n):
         y2_values.append(y2)
         y1_values.append(y1)
 
-    # df needed to generate table
     df = pd.DataFrame({
         's': s_values,
         'r': r_values,
         'x': x_values,
         'y': y_values,
-        'phi(n)': phi_n_values,
+        'φ(n)': phi_n_values,
         'e': e_values,
         'x2': x2_values,
         'x1': x1_values,
@@ -70,7 +67,6 @@ def extended_gcd(phi_n):
 
     print(df.to_markdown(index=False))
 
-    # print r, x, y
     print("\nr: ", phi_n)
     print("x: ", x2)
     if y2_values[-1] < 0:
@@ -89,22 +85,22 @@ def modular_exponentiation(x, d, n):
     w = 1
 
     # lists for tabular representation
-    i_values = list(range(14, -1, -1))  # iter from 14 to 0
-    ai_values = ['-'] + list(d_bin.zfill(15)[-15:])  # last 15 bits
+    i_values = list(range(len(d_bin) - 1, -1, -1))  # iter from len(d_bin) - 1 to 0
+    ai_values = ['-'] + list(d_bin)  # binary representation bits
     w_values = [1]  # primary w value
 
-    print(f"Binary representation of {d} is: {d_bin}\n")
+    print(f"Decimal representation of d: {d} has binary sequence: {d_bin}\n")
 
-    for i, bit in enumerate(d_bin.zfill(15)[-15:], start=1):
+    for i, bit in enumerate(d_bin):
         w = (w * w) % n
         if bit == '1':
             w = (w * x) % n
         w_values.append(w)
-        # print(f"Iteration {15 - i} - bit: {bit}, w = {w}")
+        # print(f"Iteration {len(d_bin) - 1 - i} - bit: {bit}, w = {w}")
 
     # trimming lists
-    ai_values = ai_values[:16]
-    w_values = w_values[:16]
+    ai_values = ai_values[:len(d_bin) + 1]
+    w_values = w_values[:len(d_bin) + 1]
 
     # yet another tabular df
     df = pd.DataFrame({
@@ -121,12 +117,12 @@ if __name__ == "__main__":
     # unroll into variables
     p, q, c = take_user_input()
 
-    # calculate n and phi(n)
+    # calculate n and φ(n)
     n = p * q
     phi_n = (p - 1) * (q - 1)
 
     print(f"n = {n}")
-    print(f"phi(n) = {phi_n}")
+    print(f"φ(n) = {phi_n}")
 
     # execute algo
     phi_n, x, d = extended_gcd(phi_n)
